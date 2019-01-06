@@ -2,8 +2,11 @@ const Discord = requrie("discord.js");
 const config = require("../config.json");
 const serverStats = {
     guildID: config.guildid,
-    ticketCategoryID: config.ticketCategoryID
+    ticketCategoryID: config.ticketCategoryID,
+    logsid: config.logsid
 };
+
+const prefix = config.prefix;
 
 module.exports = async (client, message) => {
     const db = client.db;
@@ -70,7 +73,7 @@ module.exports = async (client, message) => {
         support = await db.fetch(`support_${support}`);
         let supportUser = client.users.get(support.targetID);
         if (!supportUser) return message.channel.delete();
-        if (message.content.toLowerCase() === '/complete') {
+        if (message.content.toLowerCase() === `${prefix}complete` || `${prefix}close`) {
             const complete = new Discord.RichEmbed()
                 .setColor('RANDOM')
                 .setAuthor(`Hey, ${supportUser.tag}`, supportUser.avatarURL)
@@ -84,7 +87,7 @@ module.exports = async (client, message) => {
                 .addField('Support User', `${supportUser.tag}`)
                 .addField('Closer', message.author.tag)
                 .setColor('RANDOM')
-            const staffChannel = client.channels.get('489156917092941826'); //Create a log channel and put id here
+            const staffChannel = client.channels.get(`${serverStats.logsid}`); //Create a log channel and put id here
             staffChannel.send(inEmbed);
         }
         const embed4 = new Discord.RichEmbed()
